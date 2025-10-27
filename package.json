@@ -11,7 +11,8 @@
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
@@ -54,7 +55,11 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^10.3.3",
     "@semantic-release/release-notes-generator": "^14.0.1",
-    "semantic-release": "^24.2.3"
+    "semantic-release": "^24.2.3",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
   },
   "dependencies": {
     "@adonisjs/auth": "^9.4.0",
@@ -75,5 +80,13 @@
   "prettier": "@adonisjs/prettier-config",
   "release": {
     "$schema": "https://unpkg.com/semantic-release@24/schema/releaserc.schema.json"
+  },
+  "lint-staged": {
+    "*.{ts,js,json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "**/*.{ts,js}": [
+      "eslint --fix"
+    ]
   }
 }
