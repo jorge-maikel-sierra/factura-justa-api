@@ -21,6 +21,7 @@ yarn-error.log
 .idea
 .vscode
 .github
+.git-commit-msg.txt
 
 # Platform specific
 .DS_Store
