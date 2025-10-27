@@ -24,6 +24,7 @@ yarn-error.log
 .github/*
 !/.github/workflows
 !/.github/workflows/**
+!/.github/CODEOWNERS
 .git-commit-msg.txt
 
 # Platform specific
