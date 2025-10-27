@@ -20,7 +20,10 @@ yarn-error.log
 .fleet
 .idea
 .vscode
-.github
+# Ignora todo .github excepto workflows
+.github/*
+!/.github/workflows
+!/.github/workflows/**
 .git-commit-msg.txt
 
 # Platform specific
