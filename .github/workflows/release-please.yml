@@ -15,7 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release Please
+        id: release
         uses: google-github-actions/release-please-action@v4
         with:
           manifest-file: release-please-manifest.json
           config-file: release-please-config.json
+
+      - name: Summary when release created
+        if: steps.release.outputs.release_created == 'true'
+        run: |
+          echo "Se publicó el release: ${{ steps.release.outputs.tag_name }}"
+          echo "Nota: CHANGELOG.md actualizado en la PR de release."
