@@ -1,0 +1,14 @@
+build(docker): agrega docker-compose para MySQL y MSSQL MCP
+
+Se añade docker-compose con servicios:
+- mysql (8.4): puerto host 13306, healthcheck y volumen persistente
+- mssql (Azure SQL Edge): puerto host 11433 para evitar conflictos
+- mssql-mcp (amd64): conectado internamente a mssql en la red de compose
+
+Cambios adicionales:
+- .env y .env.example: corrige SA_PASSWORD/TZ y ajusta DB_* a factura_justa (127.0.0.1:13306)
+- docs/mcp-mssql.md: guía para build/run, VS Code tasks y uso con docker-compose
+
+Notas:
+- En zsh, evitar comillas dobles con contraseñas que contengan '!'
+- El servidor MCP por stdio se cierra si no hay cliente conectado

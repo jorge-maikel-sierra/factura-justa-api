@@ -1,0 +1,48 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - TZ=${TZ}
+    ports:
+      - '13306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-uroot', '-p${DB_PASSWORD}']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  mssql:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: mssql
+    environment:
+      - ACCEPT_EULA=1
+      - MSSQL_SA_PASSWORD=${SA_PASSWORD}
+      - MSSQL_PID=Developer
+    # Cambia el puerto del host si 1433 ya está en uso
+    ports:
+      - '11433:1433'
+    volumes:
+      - mssql-data:/var/opt/mssql
+    restart: unless-stopped
+
+  mssql-mcp:
+    image: mssql-mcp:latest
+    container_name: mssql-mcp
+    # La imagen publicada suele ser amd64; en Apple Silicon se usará emulación si no compilas arm64
+    platform: linux/amd64
+    depends_on:
+      - mssql
+    environment:
+      MSSQL_CONNECTION_STRING: Server=mssql,1433; Database=master; User Id=sa; Password=${SA_PASSWORD}; TrustServerCertificate=true;
+    restart: on-failure
+    # No expone puertos: el protocolo MCP es por stdio; se usa via docker run/exec o clientes que soporten stdio
+
+volumes:
+  mssql-data:
+  mysql-data:
