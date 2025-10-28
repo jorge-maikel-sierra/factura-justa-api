@@ -1,0 +1,41 @@
+# fly.toml app configuration file generada el 2025-10-28
+# https://fly.io/docs/reference/configuration/
+
+app = 'factura-justa-api'
+primary_region = 'gru'
+
+[build]
+
+[deploy]
+  release_command = 'node ace migration:run --force'
+
+[env]
+  NODE_ENV = 'production'
+  PORT = '8080'
+  HOST = '0.0.0.0'
+  LOG_LEVEL = 'info'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+  [http_service.concurrency]
+    type = 'requests'
+    hard_limit = 250
+    soft_limit = 200
+
+  [[http_service.checks]]
+    grace_period = '10s'
+    interval = '30s'
+    method = 'GET'
+    timeout = '5s'
+    path = '/'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '256mb'
+  cpus = 1

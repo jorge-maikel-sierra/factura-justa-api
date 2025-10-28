@@ -5,8 +5,9 @@ API en AdonisJS v6 (Node.js ESM + TypeScript) para "Factura Justa". Incluye aute
 ## 🚀 Características
 
 - AdonisJS v6 con TypeScript y ESM
-- Autenticación con `@adonisjs/auth` (guard api)
+- Autenticación con `@adonisjs/auth` (guard api) + OAuth Google
 - Lucid ORM con MySQL
+- **Documentación Swagger/OpenAPI completa** con `adonis-autoswagger`
 - Migraciones y pruebas con Japa
 - CI (lint, typecheck, test) y CD (deploy a Fly.io) en GitHub Actions
 - Dockerfile multi-stage para builds rápidos
@@ -59,6 +60,53 @@ DB_DATABASE=factura_justa
   - `npm run dev`
 - Ejecutar migraciones:
   - `node ace migration:run`
+
+## 📚 Documentación API (Swagger/OpenAPI)
+
+### Acceso Rápido
+
+Una vez que el servidor esté corriendo:
+
+- **Swagger UI (Interfaz Interactiva)**: http://localhost:3333/docs
+- **Especificación JSON**: http://localhost:3333/swagger
+
+### Endpoints Documentados
+
+#### Autenticación Tradicional
+
+- `POST /auth/register` - Registro de usuario con email/password
+- `POST /auth/login` - Inicio de sesión
+- `POST /auth/logout` - Cerrar sesión (requiere autenticación)
+- `GET /auth/me` - Obtener perfil del usuario autenticado
+
+#### Autenticación Social (Google OAuth)
+
+- `GET /auth/google/redirect` - Iniciar flujo de autenticación con Google
+- `GET /auth/google/callback` - Callback de Google OAuth con unificación de cuentas
+
+### Características de la Documentación
+
+✅ **Esquemas OpenAPI 3.0** completos para todos los requests y responses  
+✅ **Autenticación JWT** integrada en Swagger UI (botón Authorize)  
+✅ **Validaciones** documentadas con ejemplos de errores  
+✅ **Ejemplos realistas** en cada endpoint  
+✅ **Interfaz interactiva** para probar la API directamente  
+✅ **Unificación de cuentas** Google OAuth explicada
+
+### Guía Rápida
+
+1. **Iniciar servidor**: `npm run dev`
+2. **Abrir Swagger UI**: http://localhost:3333/docs
+3. **Probar registro**: `POST /auth/register` con email, password y fullName
+4. **Copiar token** de la respuesta
+5. **Autorizar**: Clic en 🔒 Authorize, pegar token
+6. **Probar endpoint protegido**: `GET /auth/me`
+
+### Documentación Detallada
+
+- **Guía Rápida**: `docs/SWAGGER_QUICK_START.md`
+- **Configuración Completa**: `docs/swagger-setup.md`
+- **Esquemas Definidos**: Ver `config/swagger.ts`
 
 ## ✅ Calidad (CI)
 

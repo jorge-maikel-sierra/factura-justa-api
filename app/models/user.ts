@@ -21,7 +21,16 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare email: string
 
   @column({ serializeAs: null })
-  declare password: string
+  declare password: string | null
+
+  @column()
+  declare provider: string
+
+  @column()
+  declare providerId: string | null
+
+  @column()
+  declare isActive: boolean
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -33,7 +42,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @beforeSave()
   static async hashPlainPassword(user: User) {
-    if (user.$dirty.password) {
+    if (user.$dirty.password && user.password) {
       user.password = await hash.make(user.password)
     }
   }
