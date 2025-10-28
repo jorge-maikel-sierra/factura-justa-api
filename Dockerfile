@@ -10,8 +10,8 @@ RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 # Copiar el resto del código fuente
 COPY . .
 
-# Compilar a producción (genera carpeta build con package.json propio)
-RUN node ace build --production
+# Compilar la aplicación (genera carpeta build con package.json propio)
+RUN node ace build
 
 
 FROM node:20-alpine AS runner
@@ -24,8 +24,13 @@ ENV NODE_ENV=production \
 # Copiar artefactos de build (incluye package.json de producción)
 COPY --from=build /app/build ./
 
-# Instalar dependencias de producción para el artefacto compilado
-RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
+# Instalar dependencias de producción para el artefacto compilado (sin scripts)
+# Evita fallos por "prepare" (husky) en entorno de producción
+RUN if [ -f package-lock.json ]; then \
+            npm ci --omit=dev --ignore-scripts; \
+        else \
+            npm install --omit=dev --ignore-scripts; \
+        fi
 
 EXPOSE 8080
 

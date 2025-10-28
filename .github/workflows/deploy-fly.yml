@@ -21,25 +21,8 @@ jobs:
       - name: Set up Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@v1
 
-      - name: Authenticate Docker to Fly registry
+      - name: Deploy (Nixpacks)
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          flyctl auth docker
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push image
-        run: |
-          docker buildx create --use --name builder || true
-          docker buildx build \
-            --platform linux/amd64 \
-            -t registry.fly.io/${{ env.FLY_APP_NAME }}:${{ github.sha }} \
-            --push .
-
-      - name: Deploy prebuilt image
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        run: |
-          flyctl deploy --image registry.fly.io/${{ env.FLY_APP_NAME }}:${{ github.sha }} -a "$FLY_APP_NAME" --strategy immediate
+          flyctl deploy --nixpacks -a "$FLY_APP_NAME" --now --strategy immediate

@@ -3,8 +3,7 @@ app = "factura-justa-api"
 
 primary_region = "mad"
 
-[build]
-  dockerfile = "Dockerfile"
+
 
 [http_service]
   internal_port = 8080
