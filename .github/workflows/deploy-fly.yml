@@ -24,8 +24,8 @@ jobs:
       - name: Set up Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@v1
 
-      - name: Build and deploy
+      - name: Build and deploy (Dockerfile)
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          flyctl deploy --remote-only --build-arg BUILDKIT_INLINE_CACHE=1
+          flyctl deploy --remote-only --dockerfile Dockerfile --build-arg BUILDKIT_INLINE_CACHE=1
