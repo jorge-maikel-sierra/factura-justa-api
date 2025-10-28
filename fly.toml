@@ -1,3 +1,4 @@
+app = "factura-justa-api"
 # Configuración de Fly.io para factura-justa-api
 
 primary_region = "mad"
