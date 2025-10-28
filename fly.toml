@@ -1,0 +1,20 @@
+# Configuración de Fly.io para factura-justa-api
+
+primary_region = "mad"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[checks]
+  [checks.http]
+    interval = "15s"
+    timeout = "2s"
+    method = "GET"
+    path = "/"
+    protocol = "http"
+    grace_period = "10s"
