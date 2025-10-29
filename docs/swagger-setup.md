@@ -417,10 +417,6 @@ Los controladores usan referencias a esquemas con la sintaxis `<SchemaName>`:
    - `POST /auth/logout`
    - El token queda invalidado
 
-5. **Probar OAuth**:
-   - `GET /auth/google/redirect`
-   - Abrir en navegador para flujo completo
-
 ## 🔧 Mantenimiento
 
 ### Actualizar Documentación

@@ -272,6 +272,104 @@ ejemploCompleto()
 
 ---
 
+## 🔐 Autenticación con Google (OAuth 2.0)
+
+El flujo de autenticación con Google no se puede iniciar con una llamada `fetch` o AJAX desde el frontend. Requiere una redirección completa del navegador para que el usuario pueda interactuar con la página de consentimiento de Google.
+
+### Flujo de Autenticación
+
+**Paso 1: Redirigir al usuario a la API**
+
+El frontend debe redirigir al usuario a la ruta de redirección de Google en tu API. **No uses `fetch`**.
+
+**Opción A: Enlace HTML**
+
+```html
+<a href="http://127.0.0.1:3333/auth/google/redirect" target="_self"> Iniciar sesión con Google </a>
+```
+
+**Opción B: JavaScript**
+
+```javascript
+function iniciarLoginGoogle() {
+  // Redirige la ventana actual a la URL de la API
+  window.location.href = 'http://127.0.0.1:3333/auth/google/redirect'
+}
+```
+
+Tu API se encargará de redirigir al usuario a la página de autenticación de Google.
+
+**Paso 2: Google redirige al `callback`**
+
+Una vez que el usuario autoriza la aplicación, Google lo redirigirá de vuelta a tu API, a la ruta `/auth/google/callback`.
+
+**Paso 3: La API procesa el `callback`**
+
+Tu backend (el método `callback` en `GoogleAuthController`) recibe la información del usuario de Google, busca o crea una cuenta en tu base de datos, genera un token de acceso JWT y lo devuelve en la respuesta.
+
+**¿Cómo obtiene el token el frontend?**
+
+Dado que el flujo termina en una redirección, tienes varias estrategias para pasar el token al frontend:
+
+1.  **Parámetro en la URL de Redirección (Recomendado para SPA)**:
+    - El backend redirige al frontend a una URL específica con el token como parámetro.
+    - Ejemplo: `https://tu-frontend.com/auth/callback?token=eyJ...`
+    - El frontend lee el token de la URL, lo guarda en `localStorage` y redirige al usuario a la página principal.
+
+2.  **Cookie `httpOnly`**:
+    - El backend establece una cookie segura que el navegador enviará automáticamente en futuras peticiones.
+    - Es más seguro contra ataques XSS, pero requiere configuración de CORS (`credentials: 'include'`).
+
+A continuación se muestra un ejemplo de cómo podrías modificar tu método `callback` para redirigir al frontend con el token.
+
+**Ejemplo de modificación en `GoogleAuthController.ts`:**
+
+```typescript
+// app/controllers/google_auth_controller.ts
+
+// ... (importaciones y otras partes del código)
+
+export default class GoogleAuthController {
+  // ...
+
+  async callback({ ally, response }: HttpContext) {
+    const google = ally.use('google')
+
+    try {
+      const googleUser = await google.user()
+
+      if (!googleUser.email) {
+        // Redirigir al frontend con un mensaje de error
+        return response.redirect('https://tu-frontend.com/login?error=email_not_provided')
+      }
+
+      const usuario = await this.authService.buscarOCrearUsuarioSocial({
+        email: googleUser.email,
+        fullName: googleUser.name,
+        provider: 'google',
+        providerId: googleUser.id,
+      })
+
+      if (!usuario.isActive) {
+        // Redirigir al frontend con un mensaje de error
+        return response.redirect('https://tu-frontend.com/login?error=user_inactive')
+      }
+
+      const token = await this.authService.generarTokenAcceso(usuario)
+      const tokenValue = token.value!.release()
+
+      // Redirigir al frontend con el token en la URL
+      return response.redirect(`https://tu-frontend.com/auth/callback?token=${tokenValue}`)
+    } catch (error) {
+      // Redirigir al frontend con un mensaje de error genérico
+      return response.redirect(`https://tu-frontend.com/login?error=google_auth_failed`)
+    }
+  }
+}
+```
+
+---
+
 ## 🔴 Ejemplos con HTTPie
 
 HTTPie es una herramienta CLI más amigable que cURL.
