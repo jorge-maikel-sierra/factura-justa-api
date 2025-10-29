@@ -5,13 +5,6 @@ import Env from '#start/env'
 export default class GoogleAuthController {
   private authService = new AuthService()
 
-  /**
-   * @redirect
-   * @summary Iniciar autenticación con Google
-   * @description Redirige al usuario a la página de autenticación de Google OAuth 2.0. El usuario debe autorizar la aplicación para acceder a su email y perfil. Después de la autorización, Google redirigirá al usuario al endpoint de callback.
-   * @tag Autenticación
-   * @responseBody 302 - Redirección a Google OAuth (no requiere body)
-   */
   async redirect({ ally }: HttpContext) {
     return ally.use('google').redirect()
   }

@@ -5,9 +5,9 @@ export default {
   path: '/docs',
   exclude: ['/swagger', '/docs'],
 
-  // Propiedades requeridas por adonis-autoswagger
+  // Propiedades requeridas por adonis-autoswagger y rutas a ignorar
   tagIndex: 3,
-  ignore: ['/'],
+  ignore: ['/', '/auth/google/redirect', '/auth/google/callback', '/swagger', '/docs'],
   snakeCase: false,
 
   common: {
