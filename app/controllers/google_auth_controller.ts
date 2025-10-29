@@ -15,17 +15,6 @@ export default class GoogleAuthController {
     return ally.use('google').redirect()
   }
 
-  /**
-   * @callback
-   * @summary Callback de Google OAuth
-   * @description Procesa la respuesta de Google OAuth y realiza la unificación de cuentas. Si el email ya existe en el sistema (registrado con email/password), vincula la cuenta de Google al usuario existente. Si no existe, crea un nuevo usuario con provider 'google'. Devuelve un token JWT válido por 7 días.
-   * @tag Autenticación
-   * @paramQuery code - string - Código de autorización de Google (proporcionado automáticamente) - required
-   * @paramQuery state - string - Estado de OAuth para prevenir CSRF (proporcionado automáticamente) - required
-   * @responseBody 200 - <GoogleAuthResponse> - Autenticación con Google exitosa
-   * @responseBody 400 - <GoogleAuthError> - Error en el flujo OAuth (email no proporcionado, usuario canceló, etc.)
-   * @responseBody 403 - <ForbiddenError> - Usuario inactivo o sin permisos
-   */
   async callback({ ally, response }: HttpContext) {
     const google = ally.use('google')
 
