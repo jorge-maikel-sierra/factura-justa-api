@@ -42,8 +42,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @beforeSave()
   static async hashPlainPassword(user: User) {
+    // Solo hashear si la contraseña cambió Y no está ya hasheada
     if (user.$dirty.password && user.password) {
-      user.password = await hash.make(user.password)
+      // Verificar que no esté ya hasheada (los hashes de scrypt empiezan con $scrypt$)
+      if (!user.password.startsWith('$scrypt$')) {
+        user.password = await hash.make(user.password)
+      }
     }
   }
 }

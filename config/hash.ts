@@ -1,6 +1,6 @@
 import { defineConfig, drivers } from '@adonisjs/core/hash'
 
-const hashConfig = defineConfig({
+export default defineConfig({
   default: 'scrypt',
 
   list: {
@@ -12,8 +12,6 @@ const hashConfig = defineConfig({
     }),
   },
 })
-
-export default hashConfig
 
 /**
  * Inferring types for the list of hashers you have configured

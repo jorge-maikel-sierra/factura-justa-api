@@ -66,35 +66,38 @@ export default class AuthController {
    * @responseBody 403 - <ForbiddenError> - Usuario inactivo o sin permisos
    */
   async login({ request, response }: HttpContext) {
-    const datos = await request.validateUsing(loginValidator)
+    try {
+      const datos = await request.validateUsing(loginValidator)
 
-    // Verificar credenciales usando el AuthFinder del modelo
-    const usuario = await User.verifyCredentials(datos.email, datos.password)
+      // Ahora intentar verificar credenciales
+      const usuario = await User.verifyCredentials(datos.email, datos.password)
 
-    // Verificar que el usuario esté activo
-    if (!usuario.isActive) {
-      return response.forbidden({
-        mensaje: 'Usuario inactivo',
+      // Generar token de acceso
+      const token = await this.authService.generarTokenAcceso(usuario)
+
+      return response.ok({
+        mensaje: 'Inicio de sesión exitoso',
+        usuario: {
+          id: usuario.id,
+          email: usuario.email,
+          fullName: usuario.fullName,
+          provider: usuario.provider,
+        },
+        token: {
+          type: 'bearer',
+          value: token.value!.release(),
+          expiresAt: token.expiresAt,
+        },
       })
+    } catch (error) {
+      if (error.code === 'E_INVALID_CREDENTIALS') {
+        return response.badRequest({
+          errors: [{ message: 'Invalid user credentials' }],
+        })
+      }
+
+      throw error
     }
-
-    // Generar token de acceso
-    const token = await this.authService.generarTokenAcceso(usuario)
-
-    return response.ok({
-      mensaje: 'Inicio de sesión exitoso',
-      usuario: {
-        id: usuario.id,
-        email: usuario.email,
-        fullName: usuario.fullName,
-        provider: usuario.provider,
-      },
-      token: {
-        type: 'bearer',
-        value: token.value!.release(),
-        expiresAt: token.expiresAt,
-      },
-    })
   }
 
   /**
