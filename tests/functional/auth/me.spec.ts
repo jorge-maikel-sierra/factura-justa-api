@@ -22,9 +22,9 @@ test.group('Auth Controller - Me', (group) => {
     const authService = new AuthService()
     const tokenResponse = await authService.generarTokenAcceso(testUser)
 
-    // ✅ SOLUCIÓN: tokenResponse es directamente el AccessToken
-    // La propiedad 'value' es un objeto Secret que contiene el token
-    // Necesitas llamar a .release() para obtener el string
+    if (!tokenResponse.value) {
+      throw new Error('El token generado no tiene valor')
+    }
     authToken = tokenResponse.value.release()
   })
 
