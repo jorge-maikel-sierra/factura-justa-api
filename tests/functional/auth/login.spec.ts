@@ -22,7 +22,7 @@ test.group('Auth Controller - Login', (group) => {
 
   test('debería hacer login exitosamente con credenciales válidas', async ({ client }) => {
     // ✅ Crear usuario SIN hashear manualmente (el modelo lo hace)
-    const user = await User.create({
+    await User.create({
       email: userEmail,
       password: 'Password123!', // El modelo hasheará esto automáticamente
       fullName: 'Login Test User',
