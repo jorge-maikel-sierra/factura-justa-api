@@ -20,7 +20,7 @@ test.group('Auth Controller - Login', (group) => {
     await db.rawQuery('DELETE FROM users WHERE email = ?', ['inactive@test.com'])
   })
 
-  test('debería hacer login exitosamente con credenciales válidas', async ({ client, assert }) => {
+  test('debería hacer login exitosamente con credenciales válidas', async ({ client }) => {
     // ✅ Crear usuario SIN hashear manualmente (el modelo lo hace)
     const user = await User.create({
       email: userEmail,
