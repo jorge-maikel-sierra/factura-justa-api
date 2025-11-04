@@ -23,6 +23,9 @@ test.group('Auth Controller - Logout', (group) => {
     // Generar token para el usuario
     const authService = new AuthService()
     const token = await authService.generarTokenAcceso(testUser)
+    if (!token.value) {
+      throw new Error('El token generado no tiene valor')
+    }
     authToken = token.value.release()
   })
 
